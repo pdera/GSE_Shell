@@ -1,0 +1,10 @@
+fit2d executable location      ; E:\Dropbox\software\fit2d_shell\GSE_shell\fit2d.exe
+jspds card libtary location    ; E:\Dropbox\software\fit2d_shell\GSE_shell\jcpds\
+calibrate script location      ; E:\Dropbox\software\fit2d_shell\GSE_shell\open_with_cal.mac
+open with cal script location  ; E:\Dropbox\software\fit2d_shell\GSE_shell\calibrate.mac
+mask script location           ; E:\Dropbox\software\fit2d_shell\GSE_shell\mask.mac
+exmask script location         ; E:\Dropbox\software\fit2d_shell\GSE_shell\existing_mask.mac
+cake   script location         ; E:\Dropbox\software\fit2d_shell\GSE_shell\cake.mac
+data directory                 ; E:\Dropbox\software\HIGP\
+destination directory          ; E:\Dropbox\APS_Data\16IDB_2013-3\Yi_Hu\cal\
+default wavelength             ;    1.79026

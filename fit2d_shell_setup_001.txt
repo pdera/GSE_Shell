@@ -1,0 +1,10 @@
+fit2d executable location      ; P:\dac_user\sfw\GSE_shell\fit2d.exe
+jspds card libtary location    ; T:\dac_user\jcpds\
+calibrate script location      ; P:\dac_user\sfw\GSE_shell\open_with_cal.mac
+open with cal script location  ; P:\dac_user\sfw\GSE_shell\calibrate.mac
+mask script location           ; P:\dac_user\sfw\GSE_shell\mask.mac
+exmask script location         ; P:\dac_user\sfw\GSE_shell\existing_mask.mac
+cake   script location         ; P:\dac_user\sfw\GSE_shell\cake.mac
+data directory                 ; T:\dac_user\2010\IDD_2010-2\Murli\
+destination directory          ; T:\dac_user\2011\IDD_2011-1\Fischer\
+default wavelength             ;    0.33440

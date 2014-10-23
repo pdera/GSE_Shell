@@ -1,0 +1,24 @@
+VERSION: 4
+COMMENT: NaMgF3(JCPDS #####, EOS from dMaN)
+K0:       76.1
+K0P:       4
+SYMMETRY: ORTHORHOMBIC
+A:      5.409
+B:      5.5579
+C:      7.765
+ALPHAT:      0.000000
+DIHKL: 3.8825       10.     0   0   2
+DIHKL: 3.8763       25.     1	  1	0
+DIHKL: 2.7789       20.     0	  2	0
+DIHKL: 2.7432       74.     1	  1	2
+DIHKL: 2.4319       19.     2	  1	0
+DIHKL: 2.3554       19.     1	  2	1
+DIHKL: 2.3348       44.     1	  0	3
+DIHKL: 2.3207       36.     2   1   1
+DIHKL: 2.2597       40.     1	  1	0
+DIHKL: 2.2192       23.     1	  1	0
+DIHKL: 2.0851       20.     1	  1	0
+DIHKL: 1.9412       55.     0   0   4
+DIHKL: 1.9382      100.     2   2   0
+DIHKL: 1.5688       61.     3	  1	2
+DIHKL: 1.3716       37.     2   2   4

@@ -1,0 +1,24 @@
+%!*\ BEGINNING OF GUI MACRO FILE
+%!*\
+%!*\ This is a comment line
+%!*\
+I ACCEPT
+key
+dimensions
+3500
+3500
+yes
+no
+exit
+POWDER DIFFRACTION (2-D)
+INPUT
+T:\dac_user\2008\IDD_2008-2\CARS\Dera\Ni2P\Ni2Pb_P1_C1_lh_100.tif
+O.K.
+O.K.
+options
+colours
+inverse
+exit
+exit
+MASK
+%!*\ END OF IO MACRO FILE

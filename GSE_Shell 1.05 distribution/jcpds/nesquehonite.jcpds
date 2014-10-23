@@ -1,0 +1,10 @@
+VERSION: 4
+COMMENT: NESQ
+K0:       23.88
+K0P:       5.20000
+SYMMETRY: TETRAGONAL
+A:      7.6402
+ALPHAT:      0.000000
+DIHKL: 2.742       100.     1   1   1
+DIHKL: 2.402        45.     2   0   0
+DIHKL: 1.700        35.     2   2   0

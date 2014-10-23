@@ -1,0 +1,13 @@
+VERSION: 4
+COMMENT: Fluorite (JCPDS 6301 , EOS estimated )
+K0:       80.000
+K0P:       5.000
+SYMMETRY: CUBIC
+A:      5.4631
+ALPHAT:   1.35e-5
+DIHKL:   3.1541     84.    1.00    1.00    1.00
+DIHKL:   1.9315    100.    2.00    2.00    0.00
+DIHKL:   1.6472     32.    1.00    1.00    3.00
+DIHKL:   1.3658     12.    4.00    0.00    0.00
+DIHKL:   1.2533     12.    3.00    3.00    1.00
+DIHKL:   1.1152     24.    2.00    2.00    4.00

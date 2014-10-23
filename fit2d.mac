@@ -1,0 +1,29 @@
+%!*\ BEGINNING OF GUI MACRO FILE
+%!*\
+%!*\ This is a comment line
+%!*\
+EXIT
+POWDER DIFFRACTION (2-D)
+INPUT
+P:\dera\DAC2_Cgo2_omscan_021.tiff.pks
+CANCEL
+INPUT
+T:\dac_user\2007\test_003.mar3450
+O.K.
+CAKE
+NO CHANGE
+           0
+           0
+           0
+           1
+ 1.6629227E+03
+ 3.9510044E+01
+INTEGRATE
+O.K.
+O.K.
+ASPECT RATIO
+NO
+EXIT
+EXIT
+MACROS / LOG FILE
+%!*\ END OF IO MACRO FILE

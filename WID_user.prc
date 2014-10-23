@@ -1,0 +1,32 @@
+HEADER
+; IDL Visual Widget Builder Resource file. Version 1
+; Generated on:	01/30/2009 09:47.22
+VERSION 1
+END
+
+WID_User BASE 5 5 292 213
+TLB
+CAPTION "Select user account"
+XPAD = 3
+YPAD = 3
+SPACE = 3
+BEGIN
+  WID_DROPLIST_0 DROPLIST 14 39 161 22
+  END
+  WID_LABEL_0 LABEL 14 17 0 0
+  VALUE "Existing user accounts"
+  ALIGNLEFT
+  END
+  WID_TEXT_0 TEXT 15 84 128 21
+  WIDTH = 20
+  HEIGHT = 1
+  END
+  WID_BUTTON_0 PUSHBUTTON 152 83 119 22
+  VALUE "Create new user"
+  ALIGNCENTER
+  END
+  WID_BUTTON_1 PUSHBUTTON 14 122 256 38
+  VALUE "Start the program"
+  ALIGNCENTER
+  END
+END

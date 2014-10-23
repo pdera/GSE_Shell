@@ -1,0 +1,478 @@
+    FUNCTION profile_parameters, name
+    case name of
+    'PSEUDOVOIGT_PROFILE':res=6
+    'PEARSON7_PROFILE':res=6
+    'LORENTZ_PROFILE':res=5
+    'GAUSS_PROFILE':res=6
+    'GAUSS_PROFILE_CoKa1a2b':res=6
+    else : res=0
+    endcase
+    return, fltarr(res)
+    end
+
+    FUNCTION GAUSS_PROFILE_CoKa1a2b, p, X=x, Y=y, ERR=err
+      ; This is a single-peak 6-parameter gaussian profile function
+      ; With quadratic background
+      ; To obtain function values, call with Y=0, Err=-1
+
+      lma=1.79284/1.78899
+      lmb=1.62083/1.78899
+      G1=2.0*sqrt(alog(2.0)/!pi)
+      G2=4.0*alog(2.0)
+      Z1=(X-P[1])/P[2]
+      Z2=(X-2.0*!radeg*asin(sin(P[1]/2.0/!radeg)*lma))/P[2]
+      Z3=(X-2.0*!radeg*asin(sin(P[1]/2.0/!radeg)*lmb))/P[2]
+
+
+      Ga1=(G1/P[2])*exp(-G2*Z1^2)
+      Ga2=(G1/P[2])*exp(-G2*Z2^2)
+      Gb =(G1/P[2])*exp(-G2*Z3^2)
+
+      model = P[0]*Ga1+P[0]*Ga2*0.5+P[0]*Gb*0.25+P[3]+P[4]*X+P[5]*X^2
+;      Z=(X-P[1])/P[2]
+;      model = P[0]*exp(-(Z^2)/2.0)+P[3]+P[4]*X
+      return, (y-model)/err
+    END
+
+    FUNCTION PSEUDOVOIGT_PROFILE, p, X=x, Y=y, ERR=err
+      ; This is a single-peak 6-parameter pseudovoigt profile function
+      ; p[5] is the eta partition coeff
+      ; With linear, variable slope background
+      ; To obtain function values, call with Y=0, Err=-1
+      ; p[2] returns fwhm
+      ; p[0] returns integrated intensity
+
+      G1=2.0*sqrt(alog(2.0)/!pi)
+      G2=4.0*alog(2.0)
+      Z=(X-P[1])/P[2]
+
+      G=(G1/P[2])*exp(-G2*Z^2)
+
+      L=4.0/(!pi*P[2]*(1.0+4.0*Z^2))
+
+      model = P[0]*(P[5]*G+(1.0-P[5])*L) +P[3]+P[4]*X
+      return, (y-model)/err
+
+    END
+
+
+;--------------------------------------
+
+    FUNCTION PEARSON7_PROFILE, p, X=x, Y=y, ERR=err
+      ; This is a single-peak 6-parameter pearson7 profile function
+      ; starting p[5] should be -2.0 (Lorenzian)
+      ; With linear, variable slope background
+      ; To obtain function values, call with Y=0, Err=-1
+
+      Z=(X-P[1])/P[2]
+
+      ;b1=2.0^(-P[5])-1.0
+      ;a=0.5*gamma(0.5)*(gamma(P[5]-0.5)/(gamma(P[5])*sqrt(b1)*P[2]))
+      ;PS=((1+b1*Z^2)^P[5])/a
+      ;model = P[0]*PS+P[3]+P[4]*X
+
+      ;b=(2.0*sqrt(2.0^(-1.0/P[5])-1.0))
+      model = P[0]*(1.0+(Z)^2)^(P[5])+P[3]+P[4]*X
+      return, (y-model)/err
+    END
+
+;---------------------------------
+
+ ;   FUNCTION LORENTZ_PROFILE, p, X=x, Y=y, ERR=err
+ ;     ; This is a single-peak 5-parameter lorentzian profile function
+ ;     ; With linear, variable slope background
+ ;     ; To obtain function values, call with Y=0, Err=-1
+;
+;      Z=(X-P[1])/P[2]
+;
+;      L=4.0/(!pi*P[2]*(1.0+4.0*Z^2));
+;
+;      model = P[0]*L+P[3]+P[4]*X;
+;
+;      ;model = P[0]*(1.0+Z^2)^(-1.0)+P[3]+P[4]*X
+;      return, (y-model)/err
+;    END
+;---------------------------------
+
+   FUNCTION LORENTZ_PROFILE, p, X=x, Y=y, ERR=err
+     ; This is a single-peak 6-parameter lorentzian profile function
+     ; With linear, variable slope background
+     ; To obtain function values, call with Y=0, Err=-1
+
+      Z=(X-P[1])/P[2]
+
+      L=2.0/(!pi*P[2]) * (1.0+4.0*Z^2);
+
+      model = P[0]*L+P[3]+P[4]*X+P[5]*X^2;
+
+      ;model = P[0]*(1.0+Z^2)^(-1.0)+P[3]+P[4]*X
+      return, (y-model)/err
+    END
+;--------------------------------------
+
+    FUNCTION GAUSS_PROFILE, p, X=x, Y=y, ERR=err
+      ; This is a single-peak 6-parameter gaussian profile function
+      ; With quadratic background
+      ; To obtain function values, call with Y=0, Err=-1
+
+
+      G1=2.0*sqrt(alog(2.0)/!pi)
+      G2=4.0*alog(2.0)
+      Z=(X-P[1])/P[2]
+
+      G=(G1/P[2])*exp(-G2*Z^2)
+
+      model = P[0]*G+P[3]+P[4]*X+P[5]*X^2
+;      Z=(X-P[1])/P[2]
+;      model = P[0]*exp(-(Z^2)/2.0)+P[3]+P[4]*X
+      return, (y-model)/err
+    END
+
+;--------------------------------------
+    FUNCTION N_PSEUDOVOIGT_PROFILES, p, X=x, Y=y, ERR=err
+     COMMON parameters, N_profiles, WV, NPHS, NPKARR
+      ; This is a multiple-peak 5-parameter gaussian profile function
+      ; with a common, linear, variable slope background
+      ; To obtain function values, call with Y=0, Err=-1
+      ; number of peaks is passed through common block
+      ; starting parameters are 2-d matrix, first dimension numbers peaks
+
+      lp=p[0:5]
+      HKL=FLTARR(3)
+      positions=fltarr(N_profiles)
+      PHA=0
+      acu=fltarr(nphs)
+      acu[0]=npkarr[0]
+      for i=1, nphs-1 do acu[i]=acu[i-1]+npkarr[i]
+      for i=0, N_profiles-1 do $
+      begin
+         hkl=p[(60+i*8+1):(60+i*8+3)]
+         IF (I EQ acu[PHA]) AND (PHA+1 LT NPHS) THEN $
+         BEGIN
+            PHA=PHA+1
+            lp=p[PHA*6:PHA*6+5]
+         ENDIF
+         positions[i]=tth_from_hkl_and_lp(hkl, lp, wv)
+      end
+      r=p
+      for i=0, N_profiles-1 do r[60+i*8+1]=positions[i]
+      sz=n_elements(err)
+      er1=fltarr(sz)
+      y0=fltarr(sz)
+      er1=er1<(-1)
+      model=0.0
+      for i=0, N_profiles-1 do $
+      begin
+        para=[r[60+i*8:60+i*8+1],r[60+i*8+4:60+i*8+7]]
+        model = model+PSEUDOVOIGT_PROFILE(para, X=x, Y=y0, ERR=er1)
+      endFOR
+      return, (y-model)/err
+    END
+
+;--------------------------------------------------
+
+     FUNCTION N_PEARSON7_PROFILES, p, X=x, Y=y, ERR=err
+     COMMON parameters, N_profiles, WV, NPHS, NPKARR
+      ; This is a multiple-peak 5-parameter gaussian profile function
+      ; with a common, linear, variable slope background
+      ; To obtain function values, call with Y=0, Err=-1
+      ; number of peaks is passed through common block
+      ; starting parameters are 2-d matrix, first dimension numbers peaks
+      lp=p[0:5]
+      positions=fltarr(N_profiles)
+      for i=0, N_profiles-1 do $
+      begin
+         hkl=p[6+i*8+1:6+i*8+3]
+         positions[i]=tth_from_hkl_and_lp(hkl, lp, wv)
+      end
+      r=p
+      for i=0, N_profiles-1 do r[6+i*8+1]=positions[i]
+      sz=n_elements(err)
+      er1=fltarr(sz)
+      y0=fltarr(sz)
+      er1=er1<(-1)
+      model=0.0
+      for i=0, N_profiles-1 do $
+      begin
+        para=[r[6+i*8:6+i*8+1],r[6+i*8+4:6+i*8+7]]
+        model = model+PEARSON7_PROFILE(para, X=x, Y=y0, ERR=er1)
+      endFOR
+      return, (y-model)/err
+    END
+
+;--------------------------------------
+;--------------------------------------
+    FUNCTION N_GAUSS_PROFILES, p, X=x, Y=y, ERR=err
+     COMMON parameters, N_profiles, WV, NPHS, NPKARR
+      ; This is a multiple-peak 5-parameter gaussian profile function
+      ; with a common, linear, variable slope background
+      ; To obtain function values, call with Y=0, Err=-1
+      ; number of peaks is passed through common block
+      ; starting parameters are 2-d matrix, first dimension numbers peaks
+
+      lp=p[0:5]
+      HKL=FLTARR(3)
+      positions=fltarr(N_profiles)
+      PHA=0
+      acu=fltarr(nphs)
+      acu[0]=npkarr[0]
+      for i=1, nphs-1 do acu[i]=acu[i-1]+npkarr[i]
+      for i=0, N_profiles-1 do $
+      begin
+         hkl=p[(60+i*8+1):(60+i*8+3)]
+         IF (I EQ acu[PHA]) AND (PHA+1 LT NPHS) THEN $
+         BEGIN
+            PHA=PHA+1
+            lp=p[PHA*6:PHA*6+5]
+         ENDIF
+         positions[i]=tth_from_hkl_and_lp(hkl, lp, wv)
+      end
+      r=p
+      for i=0, N_profiles-1 do r[60+i*8+1]=positions[i]
+      sz=n_elements(err)
+      er1=fltarr(sz)
+      y0=fltarr(sz)
+      er1=er1<(-1)
+      model=0.0
+      for i=0, N_profiles-1 do $
+      begin
+        para=[r[60+i*8:60+i*8+1],r[60+i*8+4:60+i*8+7]]
+        model = model+GAUSS_PROFILE(para, X=x, Y=y0, ERR=er1)
+      endFOR
+      return, (y-model)/err
+    END
+;--------------------------------------
+    FUNCTION N_GAUSS_PROFILES_CoKa1a2b, p, X=x, Y=y, ERR=err
+     COMMON parameters, N_profiles, WV, NPHS, NPKARR
+      ; This is a multiple-peak 5-parameter gaussian profile function
+      ; with a common, linear, variable slope background
+      ; To obtain function values, call with Y=0, Err=-1
+      ; number of peaks is passed through common block
+      ; starting parameters are 2-d matrix, first dimension numbers peaks
+
+      lp=p[0:5]
+      HKL=FLTARR(3)
+      positions=fltarr(N_profiles)
+      PHA=0
+      acu=fltarr(nphs)
+      acu[0]=npkarr[0]
+      for i=1, nphs-1 do acu[i]=acu[i-1]+npkarr[i]
+      for i=0, N_profiles-1 do $
+      begin
+         hkl=p[(60+i*8+1):(60+i*8+3)]
+         IF (I EQ acu[PHA]) AND (PHA+1 LT NPHS) THEN $
+         BEGIN
+            PHA=PHA+1
+            lp=p[PHA*6:PHA*6+5]
+         ENDIF
+         positions[i]=tth_from_hkl_and_lp(hkl, lp, wv)
+      end
+      r=p
+      for i=0, N_profiles-1 do r[60+i*8+1]=positions[i]
+      sz=n_elements(err)
+      er1=fltarr(sz)
+      y0=fltarr(sz)
+      er1=er1<(-1)
+      model=0.0
+      for i=0, N_profiles-1 do $
+      begin
+        para=[r[60+i*8:60+i*8+1],r[60+i*8+4:60+i*8+7]]
+        model = model+GAUSS_PROFILE_CoKa1a2b(para, X=x, Y=y0, ERR=er1)
+      endFOR
+      return, (y-model)/err
+    END
+
+;--------------------------------------
+pro set_parinfo_PHASE_contraints, parinfo, PHASENO
+ FOR I=PHASENO, 9 DO $
+ BEGIN
+   parinfo[I*6+0].fixed = 1
+   parinfo[I*6+1].fixed = 1
+   parinfo[I*6+2].fixed = 1
+   parinfo[I*6+3].fixed = 1
+   parinfo[I*6+4].fixed = 1
+   parinfo[I*6+5].fixed = 1
+ END
+END
+;--------------------------------------
+
+pro set_parinfo_symmetry_contraints, parinfo,ph, sym
+a='P['+strcompress(string(ph*6), /remove_all)+']'
+case sym of
+ 'TRICLINIC': $; - triclinic
+ begin
+ end
+ 'MONOCLINIC':$; - monoclinic b
+ begin
+   parinfo[ph*6+3].fixed = 1
+   parinfo[ph*6+5].fixed = 1
+ end
+ 'ORTHORHOMBIC' :$; - orthorhombic
+ begin
+   parinfo[ph*6+3].fixed = 1
+   parinfo[ph*6+4].fixed = 1
+   parinfo[ph*6+5].fixed = 1
+ end
+ 'TETRAGONAL' :$; - tetragonal
+ begin
+   parinfo[ph*6+3].fixed = 1
+   parinfo[ph*6+4].fixed = 1
+   parinfo[ph*6+5].fixed = 1
+   parinfo[ph*6+1].tied = a
+ end
+ 'HEXAGONAL' :$; - hexagonal
+ begin
+   parinfo[ph*6+3].fixed = 1
+   parinfo[ph*6+4].fixed = 1
+   parinfo[ph*6+5].fixed = 1
+   parinfo[ph*6+1].tied = a
+ end
+ 'CUBIC' :$; - cubic
+ begin
+   parinfo[ph*6+3].fixed = 1
+   parinfo[ph*6+4].fixed = 1
+   parinfo[ph*6+5].fixed = 1
+   parinfo[ph*6+1].tied = a
+   parinfo[ph*6+2].tied = a
+ end
+ ELSE:
+endcase
+end
+;----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------
+pro Lebail, nphsa, spec1, wva, p, j, sym, npkarra, abc, ft, coeff, SIG, yc
+; This routine performs a multiphase lebail refinement
+
+; Calling parameters
+
+COMMON parameters, N_profiles, WV, NPHS, NPKARR
+
+nphs=nphsa
+wv=wva
+NPKARR=NPKARRa
+NP=N_ELEMENTS(SPEC1)/2
+XRANGE=[ MIN(SPEC1[0:NP-1, 0]), MAX(SPEC1[0:NP-1, 0])]
+for k=0, nphs-1 do $
+ begin
+  r1 = j[k]-> get_reflections_PD (xrange, wv)
+  sz=size(r1)
+  NPKARR[k]=sz[1]
+ endfor
+
+ N_profiles=0
+ for i=0, nphs-1 do N_profiles=N_profiles+NPKARR[i]
+ BASE0=FLTARR(60)
+
+ for i=0, nphs-1 do $
+  base0[i*6:i*6+5]=ABC[i*6:i*6+5]
+
+ HKLS0=FLTARR(N_profiles)
+ HKLS1=FLTARR(N_profiles)
+ HKLS2=FLTARR(N_profiles)
+ acc=0
+ for k=0, nphs-1 do $
+ begin
+  r1 = j[k]-> get_reflections_PD (xrange, wv)
+  sz=size(r1)
+  NPKARR[k]=sz[1]
+  if k eq 0 then acc=0 else acc=acc+NPKARR[k-1]
+  FOR I=0, NPKARR[k]-1 DO $
+  BEGIN
+    hkls0[acc+I]=r1[I].h
+    hkls1[acc+I]=r1[I].k
+    hkls2[acc+I]=r1[I].l
+  END
+ endfor
+
+
+ WIDTHS=FLTARR(N_profiles)
+ heighths=FLTARR(N_profiles)
+ backg1=FLTARR(N_profiles)
+ backg2=FLTARR(N_profiles)
+ backg3=FLTARR(N_profiles)
+ FOR I=0, N_profiles-1 DO WIDTHS[I]=0.05
+ FOR I=0, N_profiles-1 DO heighths[I]=1000.0
+ FOR I=0, N_profiles-1 DO backg1[I]=0.0
+ FOR I=0, N_profiles-1 DO backg2[I]=0.0
+ FOR I=0, N_profiles-1 DO backg3[I]=0.0
+
+ profs=fltarr(N_profiles,8)
+ profs[0:N_profiles-1,0]=heighths
+ profs[0:N_profiles-1,1]=hkls0
+ profs[0:N_profiles-1,2]=hkls1
+ profs[0:N_profiles-1,3]=hkls2
+ profs[0:N_profiles-1,4]=widths
+ profs[0:N_profiles-1,5]=backg1
+ profs[0:N_profiles-1,6]=backg2
+ profs[0:N_profiles-1,7]=backg3
+ profs=transpose(profs)
+ profs=[base0, reform(profs,N_profiles*8)]
+ x=fltarr(NP)
+ y=fltarr(NP)
+ er=fltarr(NP)
+ er=er<(-1)
+ X=SPEC1[0:np-1,0]
+ y0=SPEC1[0:np-1,1]
+
+ parinfo = replicate({value:0.D, fixed:0, tied:'',limited:[0,0],limits:[0.,0.] }, N_profiles*8+60)
+ for i=0, N_profiles-1 do $
+ begin
+    parinfo[60+i*8+1].FIXED=1   ;fix peak positions
+    parinfo[60+i*8+2].FIXED=1   ;fix peak positions
+    parinfo[60+i*8+3].FIXED=1   ;fix peak positions
+    parinfo[60+i*8+5].FIXED=1   ;fix background1
+    parinfo[60+i*8+6].FIXED=1   ;fix background2
+    parinfo[60+i*8+7].FIXED=0   ;fix background2
+    parinfo[60+i*8+4].limited = [1,1] ; limit profile
+    parinfo[60+i*8+4].limits  = [0.0,read_width_max()] ; limit profile
+    parinfo[60+i*8].limited = [1,0] ; limit intensity to positive
+    parinfo[60+i*8].limits[0]  = [0.0] ; limit intensity to positive
+    if ft eq 1 then $
+    begin
+      parinfo[60+i*8+7].limited = [1,1] ; limit PV profile G/L
+      parinfo[60+i*8+7].limits  = [0.,1.] ; limit PV profile G/l
+    end
+
+ endfor
+
+ set_parinfo_PHASE_contraints, parinfo, nphs
+ for i=0, nphs-1 do $
+   set_parinfo_symmetry_contraints, parinfo,i, SYM[i]
+
+
+
+
+    er1=fltarr(NP)
+    ;for i=0, NP-1 do Er1[i]=0.1+i/100.
+    for i=0, NP-1 do Er1[i]=1.
+    fa={X:x, Y:y0, Err:Er1}
+    if ft eq 1 then $
+    coeff = MPFIT('N_GAUSS_PROFILES_CoKa1a2b', profs, PERROR=sig, BESTNORM=BESTNORM, functargs=fa, PARINFO=parinfo) else $
+    coeff = MPFIT('N_GAUSS_PROFILES', profs, PERROR=sig, BESTNORM=BESTNORM, functargs=fa, PARINFO=parinfo)
+    if n_elements(sig) gt 0 then $
+    begin
+
+    DOF     = N_ELEMENTS(X) - N_ELEMENTS(Profs) ; deg of freedom
+    PCERROR = sig * SQRT(BESTNORM / DOF)   ; scaled uncertainties
+    sig=PCERROR
+
+    if ft eq 1  then $
+    ;yc=N_PSEUDOVOIGT_PROFILES(coeff, X=x, Y=y, ERR=er) else $
+    yc=N_GAUSS_PROFILES_CoKa1a2b(coeff, X=x, Y=y, ERR=er) else $
+    yc=N_GAUSS_PROFILES(coeff, X=x, Y=y, ERR=er)
+    print, 'Optimization completed'
+    end else print, 'Optimization failed'
+
+ end
+
+;--------------------------------------
+
+pro peak_profile_functions
+end

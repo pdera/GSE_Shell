@@ -1,0 +1,11 @@
+VERSION: 4
+COMMENT: NEON (To be edited)
+K0:       1.4
+K0P:       4
+SYMMETRY: CUBIC
+A:      4.520
+ALPHAT:      0.000000
+DIHKL:   2.577     100.  1.00    1.00    1.00
+DIHKL:   2.232     40.   2.00    0.00    0.00
+DIHKL:   1.578     25.   2.00    2.00    0.00
+DIHKL:   1.346     30.   3.00    1.00    1.00

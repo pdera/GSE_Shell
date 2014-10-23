@@ -1,0 +1,26 @@
+%!*\ BEGINNING OF GUI MACRO FILE
+%!*\
+%!*\ This is a comment line
+%!*\
+I ACCEPT
+key
+dimensions
+3500
+3500
+yes
+no
+exit
+POWDER DIFFRACTION (2-D)
+INPUT
+Nd_Mo_P2_w_001.mar3450
+O.K.
+O.K.
+options
+colours
+inverse
+exit
+exit
+MASK
+LOAD
+P:\Borkowski\2007-2\CuGeO3 #1\beam.msk
+%!*\ END OF IO MACRO FILE

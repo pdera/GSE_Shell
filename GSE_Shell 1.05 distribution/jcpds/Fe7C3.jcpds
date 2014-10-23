@@ -1,0 +1,25 @@
+VERSION: 4
+COMMENT: Fe7C3 hexagonal(17-0333)
+K0:        174.0
+K0P:       4.8
+SYMMETRY: HEXAGONAL
+A:       6.882
+C:       4.54
+ALPHAT:      0.000000
+DIHKL: 2.27000   8   0  0  2
+DIHKL:  2.25500  30   2  1  0
+DIHKL:  2.12200  40   1  0  2
+DIHKL: 2.01900  100   2  1  1
+DIHKL:  1.98900  16   3  0  0
+DIHKL:  1.89500   6   1  1  2
+DIHKL:  1.82000  10   3  0  1
+DIHKL:  1.80700  20   2  0  2
+DIHKL:  1.72000  16   2  2  0
+DIHKL: 1.41700   4   4  0  1
+DIHKL:  1.34900   8   2  0  3
+DIHKL:  1.20400  16   3  0  3
+DIHKL: 1.17100  16   3  2  2
+DIHKL:  1.15300  10   5  0  1
+DIHKL:  1.14600  16   3  3  0
+DIHKL:  1.13100   6   4  1  2
+DIHKL:  1.11700   6   3  1  3
